@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx prisma generate && vite build",
+    "build": "DATABASE_URL='postgresql://dummy:dummy@localhost:5432/dummy' npx prisma generate && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node server/index.js",
