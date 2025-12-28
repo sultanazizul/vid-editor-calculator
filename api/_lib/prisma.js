@@ -1,10 +1,4 @@
-import { neon, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
-import ws from 'ws';
-
-// WebSocket support is optional for HTTP driver but good to have compliant config
-neonConfig.webSocketConstructor = ws;
 
 let prisma;
 
@@ -16,7 +10,7 @@ export function getPrisma() {
         return prisma;
     }
 
-    console.log('🔌 Initializing NEW Prisma instance (HTTP Driver)...');
+    console.log('🔌 Initializing NEW Vanilla Prisma instance...');
 
     try {
         const dbUrl = process.env.DATABASE_URL;
@@ -25,15 +19,17 @@ export function getPrisma() {
             throw new Error('DATABASE_URL is missing');
         }
 
+        // Log masked URL check
         const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':****@');
         console.log(`🔗 Connecting with URL: ${maskedUrl}`);
 
-        // Use neon() HTTP driver - confirmed working in debug-db.js
-        const sql = neon(dbUrl);
-        const adapter = new PrismaNeon(sql);
+        // Standard initialization - Prisma reads DATABASE_URL from process.env internally
+        // or we can pass it explicitly to datasources if needed, but standard usually works best.
+        prisma = new PrismaClient({
+            log: ['query', 'info', 'warn', 'error'], // VERBOSE logging
+        });
 
-        prisma = new PrismaClient({ adapter });
-        console.log('✅ Prisma Client initialized using HTTP driver');
+        console.log('✅ Vanilla Prisma Client initialized');
     } catch (err) {
         console.error('❌ Error initializing Prisma:', err);
         throw err;
