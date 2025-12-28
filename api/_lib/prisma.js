@@ -1,26 +1,16 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
-import ws from 'ws';
-
-neonConfig.webSocketConstructor = ws;
 
 let prisma;
 
 export function getPrisma() {
     if (!prisma) {
-        console.log('🔌 Initializing Prisma with Neon Adapter (WebSocket)...');
-
+        console.log('🔌 Initializing Standard Prisma Client...');
         try {
-            if (!process.env.DATABASE_URL) {
-                throw new Error('DATABASE_URL is missing');
-            }
-
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            const adapter = new PrismaNeon(pool);
-
-            prisma = new PrismaClient({ adapter });
-            console.log('✅ Prisma Client initialized with Adapter');
+            // With url = env("DATABASE_URL") in schema, 
+            // Prisma Client automatically picks up process.env.DATABASE_URL
+            // We don't need to pass anything to constructor unless overriding it.
+            prisma = new PrismaClient();
+            console.log('✅ Standard Prisma Client initialized');
         } catch (err) {
             console.error('❌ Error initializing Prisma:', err);
             throw err;
