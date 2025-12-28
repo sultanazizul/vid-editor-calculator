@@ -2,7 +2,7 @@
 
 Aplikasi PWA untuk menghitung dan mengelola fee editor video. Dilengkapi dengan dashboard analytics, invoice generator, dan integrasi database PostgreSQL.
 
-![Editor Fee Calculator](public/icon-512x512.png)
+![Dashboard Screenshot](public/screenshots/dashboard.png)
 
 ## ✨ Fitur
 
