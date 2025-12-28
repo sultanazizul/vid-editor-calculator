@@ -1,5 +1,6 @@
 // API Client for Editor Fee Calculator
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// In production (Vercel), use relative /api path. In dev, use localhost:3001
+const API_BASE = import.meta.env.PROD ? '/api' : (import.meta.env.VITE_API_URL || 'http://localhost:3001/api');
 
 // ============ EDITORS ============
 
