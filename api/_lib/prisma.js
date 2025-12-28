@@ -1,20 +1,26 @@
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
+import ws from 'ws';
+
+neonConfig.webSocketConstructor = ws;
 
 let prisma;
 
 export function getPrisma() {
     if (!prisma) {
-        console.log('🔌 Initializing Standard Prisma Client...');
-        try {
-            // Use standard Prisma Client without adapter first to test connectivity
-            // This relies on schema.prisma `datasource db { provider = "postgresql" url = env("DATABASE_URL") }`
-            // But in Prisma 7, I moved URL to constructor or config.
-            // Let's modify schema to be standard or pass datasourceUrl here.
+        console.log('🔌 Initializing Prisma with Neon Adapter (WebSocket)...');
 
-            prisma = new PrismaClient({
-                datasourceUrl: process.env.DATABASE_URL,
-            });
-            console.log('✅ Standard Prisma Client initialized');
+        try {
+            if (!process.env.DATABASE_URL) {
+                throw new Error('DATABASE_URL is missing');
+            }
+
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            const adapter = new PrismaNeon(pool);
+
+            prisma = new PrismaClient({ adapter });
+            console.log('✅ Prisma Client initialized with Adapter');
         } catch (err) {
             console.error('❌ Error initializing Prisma:', err);
             throw err;
