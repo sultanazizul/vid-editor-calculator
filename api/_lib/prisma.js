@@ -12,11 +12,7 @@ export function getPrisma() {
             // Let's modify schema to be standard or pass datasourceUrl here.
 
             prisma = new PrismaClient({
-                datasources: {
-                    db: {
-                        url: process.env.DATABASE_URL,
-                    },
-                },
+                datasourceUrl: process.env.DATABASE_URL,
             });
             console.log('✅ Standard Prisma Client initialized');
         } catch (err) {
