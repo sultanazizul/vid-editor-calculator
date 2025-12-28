@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Editor {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      String   // "Rough Cut (Audio)", "Rough Cut (Video)", "Full Editing"
+  duration  Int      // in minutes
+  total     Int      // in Rupiah
+  tags      String[] // ["Rush", "Cari Aset", etc.]
+  date      DateTime @default(now())
+  editorId  Int?
+  editor    Editor?  @relation(fields: [editorId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rate {
+  id             Int    @id @default(autoincrement())
+  key            String @unique // "rough_audio", "rough_video", "full_edit"
+  label          String
+  basePrice      Int
+  extraPerMinute Int
+}
